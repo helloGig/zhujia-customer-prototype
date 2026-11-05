@@ -370,7 +370,7 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
 .dealer-opt:hover,.dealer-opt.on{background:var(--primary-light)}
 .dealer-opt .city{color:var(--text-muted);font-size:12px;margin-left:auto}
 .dealer-empty{padding:16px;text-align:center;color:var(--text-muted);font-size:13px}
-.check-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;cursor:pointer;user-select:none;line-height:1.4}
+.form-group label.check-row,.check-row{display:flex;margin-bottom:0;font-weight:400;align-items:flex-start;gap:10px;font-size:13px;cursor:pointer;user-select:none;line-height:1.4}
 .check-row .check{flex-shrink:0;width:16px;height:16px;margin-top:1px;border:1.5px solid #c0c4cc;border-radius:3px;background:#fff;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
 .check-row input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 .check-row input:checked + .check{background:var(--primary);border-color:var(--primary)}
@@ -558,7 +558,7 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
         </div>
       </div>
       <div class="form-group">
-        <label class="check-row"><input type="checkbox" id="highBudget" /><span class="check" aria-hidden="true"></span><span class="check-text"><span>预算较高</span><span class="hint">供经销商参考，勾选后对方可优先跟进</span></span></label>
+        <label class="check-row"><input type="checkbox" id="highBudget" /><span class="check" aria-hidden="true"></span><span class="check-text"><span>预算较高</span><span class="hint">客户预算明显高于一般水平，供经销商参考</span></span></label>
       </div>
       <div class="form-group" id="dealerGroup">
         <label>经销商 <span class="req">*</span> <span class="hint">可多选，回车添加</span></label>
