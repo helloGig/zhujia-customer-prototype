@@ -354,23 +354,32 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
 .reason-chip{height:32px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:13px;color:var(--text-secondary);cursor:pointer}
 .reason-chip:hover{border-color:var(--primary);color:var(--primary)}
 .reason-chip.active{border-color:var(--primary);background:var(--primary-light);color:var(--primary);font-weight:500}
-.dealer-box{border:1px solid var(--border);border-radius:6px;padding:8px;min-height:80px;background:#fff}
+.dealer-box{border:1px solid var(--border);border-radius:6px;padding:0 10px;min-height:36px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:#fff;box-sizing:border-box}
 .dealer-box:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-.dealer-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.dealer-box.has-tags{padding:6px 10px;min-height:36px;align-items:flex-start}
+.dealer-tags{display:contents}
+.dealer-tags:empty{display:none}
 .dealer-tag{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 8px;border-radius:4px;background:var(--primary-light);color:var(--primary);font-size:12px;font-weight:500}
 .dealer-tag button{width:16px;height:16px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;padding:0}
 .dealer-tag button:hover{background:rgba(37,99,235,.15)}
 .dealer-tag svg{width:12px;height:12px}
-.dealer-input{width:100%;border:none;outline:none;height:28px;font-size:13px;padding:0 4px;background:transparent}
+.dealer-input{flex:1;min-width:120px;border:none;outline:none;height:34px;font-size:13px;padding:0;background:transparent}
+.dealer-box.has-tags .dealer-input{height:26px;align-self:center}
 .dealer-list{margin-top:8px;border:1px solid var(--border);border-radius:6px;max-height:160px;overflow:auto;background:#fff}
 .dealer-opt{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;font-size:13px}
 .dealer-opt:hover,.dealer-opt.on{background:var(--primary-light)}
 .dealer-opt .city{color:var(--text-muted);font-size:12px;margin-left:auto}
 .dealer-empty{padding:16px;text-align:center;color:var(--text-muted);font-size:13px}
-.check-row{display:flex;align-items:flex-start;gap:8px;font-size:13px}
-.check-row input{margin-top:3px;width:16px;height:16px;accent-color:var(--primary)}
-.check-row .hint{display:block;font-size:12px;color:var(--text-muted);margin-top:2px}
-.info-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding:16px;background:var(--bg);border-radius:8px;margin-bottom:20px}
+.check-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;cursor:pointer;user-select:none;line-height:1.4}
+.check-row .check{flex-shrink:0;width:16px;height:16px;margin-top:1px;border:1.5px solid #c0c4cc;border-radius:3px;background:#fff;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.check-row input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.check-row input:checked + .check{background:var(--primary);border-color:var(--primary)}
+.check-row input:checked + .check::after{content:'';width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-1px}
+.check-row input:focus-visible + .check{box-shadow:0 0 0 3px rgba(37,99,235,.2)}
+.check-row .check-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.check-row .check-text > span:first-child{font-weight:500;color:var(--text);line-height:16px}
+.check-row .hint{display:block;font-size:12px;color:var(--text-muted);font-weight:400;line-height:1.5}
+.info-grid-5{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;padding:16px;background:var(--bg);border-radius:8px;margin-bottom:20px}
 @media(max-width:1100px){.info-grid-5{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:768px){.info-grid-5{grid-template-columns:1fr 1fr}}
 </style>
@@ -549,8 +558,7 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
         </div>
       </div>
       <div class="form-group">
-        <label>预算较高</label>
-        <label class="check-row"><input type="checkbox" id="highBudget" /><span>预算较高<span class="hint">供经销商参考，勾选后对方可优先跟进</span></span></label>
+        <label class="check-row"><input type="checkbox" id="highBudget" /><span class="check" aria-hidden="true"></span><span class="check-text"><span>预算较高</span><span class="hint">供经销商参考，勾选后对方可优先跟进</span></span></label>
       </div>
       <div class="form-group" id="dealerGroup">
         <label>经销商 <span class="req">*</span> <span class="hint">可多选，回车添加</span></label>
@@ -973,7 +981,9 @@ function pickReason(btn){
 }
 function renderDealerTags(){
   const box=document.getElementById('dealerTags');
+  const wrap=document.getElementById('dealerBox');
   box.innerHTML=assignState.dealers.map((n,i)=>`<span class="dealer-tag">${esc(n)}<button type="button" aria-label="移除" onclick="removeDealer(${i})">${iconClose()}</button></span>`).join('');
+  if(wrap) wrap.classList.toggle('has-tags', assignState.dealers.length>0);
 }
 function removeDealer(i){assignState.dealers.splice(i,1);renderDealerTags();renderDealerList(document.getElementById('dealerInput').value);}
 function renderDealerList(q){
