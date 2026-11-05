@@ -508,9 +508,6 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
           <button type="button" class="chip" onclick="clearQuickDate(this)">自定义</button>
         </div>
       </div>
-      <div class="form-group"><label>顺便改意向</label>
-        <select class="input select" id="fIntent" style="width:100%"><option value="">不修改</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select>
-      </div>
     </div>
     <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('followModal')">取消</button><button class="btn btn-primary" id="fSubmit" onclick="submitFollow()">保存</button></div>
   </div>
@@ -524,18 +521,6 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
   </div>
 </div>
 
-<div class="overlay" id="intentModal">
-  <div class="modal" style="max-width:400px" role="dialog">
-    <div class="modal-header"><h2>改意向</h2><button class="modal-close" onclick="closeModal('intentModal')"><svg class="ico-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-    <div class="modal-body"><div class="form-group"><label>意向等级</label>
-      <div class="segment" id="intentSeg">
-        <button type="button" data-v="A" onclick="setIntentSeg(this)">A</button>
-        <button type="button" data-v="B" onclick="setIntentSeg(this)">B</button>
-        <button type="button" data-v="C" onclick="setIntentSeg(this)">C</button>
-      </div></div></div>
-    <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('intentModal')">取消</button><button class="btn btn-primary" onclick="saveIntent()">确定</button></div>
-  </div>
-</div>
 
 <div class="overlay" id="assignModal">
   <div class="modal" style="max-width:520px" role="dialog">
@@ -544,10 +529,6 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
       <div class="form-group" id="reasonGroup">
         <label>不可服务 <span class="req">*</span></label>
         <div class="reason-grid" id="reasonGrid">
-          <button type="button" class="reason-chip" data-v="户型过小" onclick="pickReason(this)">户型过小</button>
-          <button type="button" class="reason-chip" data-v="预算过低" onclick="pickReason(this)">预算过低</button>
-          <button type="button" class="reason-chip" data-v="纯咨询" onclick="pickReason(this)">纯咨询</button>
-          <button type="button" class="reason-chip" data-v="旧房改造" onclick="pickReason(this)">旧房改造</button>
           <button type="button" class="reason-chip" data-v="超出服务半径" onclick="pickReason(this)">超出服务半径</button>
           <button type="button" class="reason-chip" data-v="其他" onclick="pickReason(this)">其他</button>
         </div>
@@ -556,9 +537,6 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
           <input class="input" id="reasonOther" placeholder="请说明其他原因" />
           <div class="form-error" id="reasonOtherErr">请填写其他原因</div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="check-row"><input type="checkbox" id="highBudget" /><span class="check" aria-hidden="true"></span><span class="check-text"><span>预算较高</span><span class="hint">客户预算明显高于一般水平，供经销商参考</span></span></label>
       </div>
       <div class="form-group" id="dealerGroup">
         <label>经销商 <span class="req">*</span> <span class="hint">可多选，回车添加</span></label>
@@ -584,8 +562,8 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
     <li>筛选改为标签页（全部/待跟进/已成交/流失）+ 搜索 + 意向/来源</li>
     <li>操作列：记跟进 / 查看；空值「—」；空状态</li>
     <li>详情：上半信息加「服务类型」（自营/分发）；「记下跟进」主按钮；步骤条；时间线；预报价禁用原因留在接待进度</li>
-    <li>分发：写明不可服务原因，分给经销商（非同事）；确定后服务类型变分发并记入时间线</li>
-    <li>记跟进可写方式/内容/下次时间/改意向，真追加</li>
+    <li>分发：不可服务原因（超出服务半径/其他），分给经销商；确定后服务类型变分发并记入时间线</li>
+    <li>记跟进可写方式/内容/下次时间，真追加</li>
     <li>建档打开不报错；失焦/提交才校验；重复提示</li>
     <li>批量建档三步：模板→上传→结果</li>
     <li>手机：侧栏抽屉 + 客户卡片 + 底栏主按钮</li>
@@ -610,11 +588,11 @@ let customers = [
   {id:'KH-2026-005',name:'吴婷',phone:'13800001005',wechat:'wx_wuting',city:'西安',source:'线上',channel:'豆包',intent:'B',status:'已成交',points:100,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:null,lastFollow:'2026-10-15 11:00',contactNote:'已通话 · 已加微信',hasDrawing:true,reception:6,follows:[],visits:[]},
   {id:'KH-2026-006',name:'郑浩',phone:'13800001006',wechat:'wx_zhenghao',city:'南京',source:'线下',channel:'老客户转介绍',intent:'C',status:'新线索',points:50,owner:'小李',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:'2026-11-03 16:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
   {id:'KH-2026-007',name:'孙莉',phone:'13800001007',wechat:'wx_sunli',city:'长沙',source:'线下',channel:'设计师/前端合作',intent:'',status:'新线索',points:null,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:'2026-11-07 10:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
-  {id:'KH-2026-008',name:'钱程',phone:'13800001008',wechat:'wx_qiancheng',city:'青岛',source:'线下',channel:'同行异业',intent:'A',status:'新线索',points:150,owner:'小王',serviceType:'分发',dealers:['青岛海纳家居'],distributeReason:'户型过小',nextFollow:'2026-11-05 11:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
+  {id:'KH-2026-008',name:'钱程',phone:'13800001008',wechat:'wx_qiancheng',city:'青岛',source:'线下',channel:'同行异业',intent:'A',status:'新线索',points:150,owner:'小王',serviceType:'分发',dealers:['青岛海纳家居'],distributeReason:'其他',nextFollow:'2026-11-05 11:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
   {id:'KH-2026-009',name:'冯雪',phone:'13800001009',wechat:'wx_fengxue',city:'苏州',source:'线下',channel:'自然到店/来电',intent:'B',status:'新线索',points:100,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:'2026-11-08 14:00',lastFollow:'2026-11-02 09:30',contactNote:'已通话',hasDrawing:false,reception:1,follows:[],visits:[]},
   {id:'KH-2026-010',name:'韩磊',phone:'13800001010',wechat:'wx_hanlei',city:'昆明',source:'线上',channel:'抖音直播',intent:'C',status:'新线索',points:50,owner:'小李',serviceType:'分发',dealers:['昆明暖居'],distributeReason:'超出服务半径',nextFollow:'2026-11-06 18:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]}
 ];
-let state = {view:'list',detailId:null,filterTab:'全部',search:'',intentFilter:'',sourceFilter:'',sortKey:'nextFollow',sortDir:'asc',followTargetId:null,intentPick:'',batchStep:1,listScroll:0};
+let state = {view:'list',detailId:null,filterTab:'全部',search:'',intentFilter:'',sourceFilter:'',sortKey:'nextFollow',sortDir:'asc',followTargetId:null,batchStep:1,listScroll:0};
 const TODAY = '2026-11-05';
 
 function fmtPhone(p){if(!p)return '—';const s=String(p).replace(/\D/g,'');if(s.length===11)return s.slice(0,3)+' '+s.slice(3,7)+' '+s.slice(7);return p;}
@@ -785,7 +763,7 @@ function renderDetail(){
     else {cls='pending';meta='未开始';}
     if(cls==='done'&&n===2&&c.follows[0]){meta=`老板 · ${c.follows[0].time.slice(0,16)}`;}
     if(cls==='current'){
-      if(n===3) action=`<div class="step-action"><button class="btn btn-sm btn-primary" onclick="openIntentModal()">定意向</button></div>`;
+      if(n===3) action=`<div class="step-action"><button class="btn btn-sm btn-primary" onclick="completeIntentStep()">定意向</button></div>`;
       if(n===4) action=`<div class="step-action"><button class="btn btn-sm btn-primary" onclick="toast('已记录邀约（演示）')">邀约</button></div>`;
       if(n===5) action=`<div class="step-action"><button class="btn btn-sm btn-primary" onclick="toast('已记录到店（演示）')">到店</button></div>`;
       if(n===6) action=`<div class="step-action"><button class="btn btn-sm btn-primary" ${c.hasDrawing?'':'disabled title="先上传图纸"'} onclick="toast('预算已发（演示）')">预算已发</button></div>`;
@@ -809,7 +787,6 @@ function renderDetail(){
           <div class="dropdown" id="moreDrop">
             <button class="btn btn-default more-trigger" onclick="toggleMore(event)">更多 ▾</button>
             <div class="dropdown-menu">
-              <button class="dropdown-item" onclick="openIntentModal();closeMore()">改意向</button>
               <button class="dropdown-item" onclick="openAssign();closeMore()">分发</button>
               <button class="dropdown-item danger" onclick="openLost();closeMore()">标流失</button>
             </div>
@@ -850,7 +827,7 @@ function openFollow(id){
   state.followTargetId=id||state.detailId;
   const c=customers.find(x=>x.id===state.followTargetId);if(!c)return;
   document.getElementById('followTitle').textContent='记下跟进 · '+c.name;
-  document.getElementById('fContent').value='';document.getElementById('fNext').value='';document.getElementById('fIntent').value='';
+  document.getElementById('fContent').value='';document.getElementById('fNext').value='';
   document.getElementById('fContentGroup').classList.remove('has-error');
   document.querySelectorAll('#fMethod button').forEach((b,i)=>b.classList.toggle('active',i===0));
   document.querySelectorAll('.quick-dates .chip').forEach(c=>c.classList.remove('active'));
@@ -874,10 +851,9 @@ function submitFollow(){
     const method=document.querySelector('#fMethod button.active').dataset.v;
     const nextRaw=document.getElementById('fNext').value;
     const next=nextRaw?nextRaw.replace('T',' '):null;
-    const intent=document.getElementById('fIntent').value;
     const now='2026-11-05 '+new Date().toTimeString().slice(0,5);
     c.follows.unshift({method,content,time:now,author:'老板',next});
-    c.lastFollow=now;if(next)c.nextFollow=next;if(intent)c.intent=intent;
+    c.lastFollow=now;if(next)c.nextFollow=next;
     if(c.status==='新线索')c.status='已联系';if(c.reception<2)c.reception=2;
     if(!c.contactNote)c.contactNote=method==='电话'?'已通话':method==='微信'?'已加微信':'已联系';
     btn.disabled=false;btn.textContent='保存';closeModal('followModal');toast('跟进已保存');render();
@@ -940,9 +916,12 @@ function downloadTemplate(){toast('模板已下载（演示）');state.batchStep
 function simulateUpload(){toast('已选择 建档导入.xlsx');}
 function openLost(){const c=customers.find(x=>x.id===state.detailId);document.getElementById('lostName').textContent=c.name;openModal('lostModal');}
 function confirmLost(){const c=customers.find(x=>x.id===state.detailId);c.status='已流失';c.nextFollow=null;closeModal('lostModal');toast('已标记为流失');render();}
-function openIntentModal(){const c=customers.find(x=>x.id===state.detailId);state.intentPick=c.intent||'A';document.querySelectorAll('#intentSeg button').forEach(b=>b.classList.toggle('active',b.dataset.v===state.intentPick));openModal('intentModal');}
-function setIntentSeg(btn){document.querySelectorAll('#intentSeg button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.intentPick=btn.dataset.v;}
-function saveIntent(){const c=customers.find(x=>x.id===state.detailId);c.intent=state.intentPick;if(c.reception<3)c.reception=3;closeModal('intentModal');toast('意向已更新为 '+state.intentPick);render();}
+function completeIntentStep(){
+  const c=customers.find(x=>x.id===state.detailId);
+  if(c && c.reception<3) c.reception=3;
+  toast('已定意向（演示）');
+  render();
+}
 const DEALER_PRESET=[
   {name:'重庆优家装饰',city:'重庆'},
   {name:'成都美居联盟',city:'成都'},
@@ -950,14 +929,13 @@ const DEALER_PRESET=[
   {name:'昆明暖居',city:'昆明'},
   {name:'武汉邻里装',city:'武汉'}
 ];
-let assignState={reason:'',other:'',dealers:[],highBudget:false};
+let assignState={reason:'',other:'',dealers:[]};
 
 function openAssign(){
-  assignState={reason:'',other:'',dealers:[],highBudget:false};
+  assignState={reason:'',other:'',dealers:[]};
   document.querySelectorAll('#reasonGrid .reason-chip').forEach(b=>b.classList.remove('active'));
   document.getElementById('reasonOtherWrap').style.display='none';
   document.getElementById('reasonOther').value='';
-  document.getElementById('highBudget').checked=false;
   document.getElementById('dealerInput').value='';
   document.getElementById('reasonGroup').classList.remove('has-error');
   document.getElementById('dealerGroup').classList.remove('has-error');
@@ -1050,7 +1028,6 @@ function confirmAssign(){
   }
   if(!assignState.dealers.length){document.getElementById('dealerGroup').classList.add('has-error');document.getElementById('dealerErr').style.display='block';ok=false;}
   if(!ok) return;
-  const high=document.getElementById('highBudget').checked;
   const c=customers.find(x=>x.id===state.detailId);
   c.serviceType='分发';
   c.dealers=assignState.dealers.slice();
@@ -1059,7 +1036,7 @@ function confirmAssign(){
   const dealerStr=c.dealers.join('、');
   c.follows.unshift({
     method:'其他',
-    content:`已分发：原因「${reasonText}」· 经销商 ${dealerStr}${high?' · 预算较高':''}`,
+    content:`已分发：原因「${reasonText}」· 经销商 ${dealerStr}`,
     time:now, author:'老板', next:null
   });
   c.lastFollow=now;
