@@ -319,7 +319,7 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
   .card-list{display:flex}
   .toolbar{flex-direction:column;align-items:stretch;gap:8px}
   .toolbar-left,.toolbar-right{margin-left:0;width:100%}
-  .toolbar-left{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+  .toolbar-left{display:grid;grid-template-columns:1fr auto;gap:8px}
   .toolbar-left .btn-primary{grid-column:1 / -1}
   .toolbar-right{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .toolbar-right .search-box{grid-column:1 / -1}
@@ -346,6 +346,33 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
   .pager .info{width:100%;text-align:center;margin-right:0;margin-bottom:4px}
   .panel-body{padding:12px}
 }
+
+.badge-svc-自营{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.badge-svc-分发{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+.svc-meta{font-size:12px;color:var(--text-muted);font-weight:400;margin-left:6px}
+.reason-grid{display:flex;flex-wrap:wrap;gap:8px}
+.reason-chip{height:32px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:13px;color:var(--text-secondary);cursor:pointer}
+.reason-chip:hover{border-color:var(--primary);color:var(--primary)}
+.reason-chip.active{border-color:var(--primary);background:var(--primary-light);color:var(--primary);font-weight:500}
+.dealer-box{border:1px solid var(--border);border-radius:6px;padding:8px;min-height:80px;background:#fff}
+.dealer-box:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.dealer-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.dealer-tag{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 8px;border-radius:4px;background:var(--primary-light);color:var(--primary);font-size:12px;font-weight:500}
+.dealer-tag button{width:16px;height:16px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;padding:0}
+.dealer-tag button:hover{background:rgba(37,99,235,.15)}
+.dealer-tag svg{width:12px;height:12px}
+.dealer-input{width:100%;border:none;outline:none;height:28px;font-size:13px;padding:0 4px;background:transparent}
+.dealer-list{margin-top:8px;border:1px solid var(--border);border-radius:6px;max-height:160px;overflow:auto;background:#fff}
+.dealer-opt{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;font-size:13px}
+.dealer-opt:hover,.dealer-opt.on{background:var(--primary-light)}
+.dealer-opt .city{color:var(--text-muted);font-size:12px;margin-left:auto}
+.dealer-empty{padding:16px;text-align:center;color:var(--text-muted);font-size:13px}
+.check-row{display:flex;align-items:flex-start;gap:8px;font-size:13px}
+.check-row input{margin-top:3px;width:16px;height:16px;accent-color:var(--primary)}
+.check-row .hint{display:block;font-size:12px;color:var(--text-muted);margin-top:2px}
+.info-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding:16px;background:var(--bg);border-radius:8px;margin-bottom:20px}
+@media(max-width:1100px){.info-grid-5{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.info-grid-5{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -502,12 +529,40 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
 </div>
 
 <div class="overlay" id="assignModal">
-  <div class="modal" style="max-width:400px" role="dialog">
-    <div class="modal-header"><h2>分发给同事</h2><button class="modal-close" onclick="closeModal('assignModal')"><svg class="ico-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-    <div class="modal-body"><div class="form-group"><label>选择同事</label>
-      <select class="input select" id="assignTo" style="width:100%"><option value="小王">小王（销售）</option><option value="小李">小李（销售）</option><option value="小张">小张（设计师）</option></select>
-    </div></div>
-    <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('assignModal')">取消</button><button class="btn btn-primary" onclick="confirmAssign()">确认分发</button></div>
+  <div class="modal" style="max-width:520px" role="dialog">
+    <div class="modal-header"><h2>分发</h2><button class="modal-close" onclick="closeModal('assignModal')"><svg class="ico-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-group" id="reasonGroup">
+        <label>不可服务 <span class="req">*</span></label>
+        <div class="reason-grid" id="reasonGrid">
+          <button type="button" class="reason-chip" data-v="户型过小" onclick="pickReason(this)">户型过小</button>
+          <button type="button" class="reason-chip" data-v="预算过低" onclick="pickReason(this)">预算过低</button>
+          <button type="button" class="reason-chip" data-v="纯咨询" onclick="pickReason(this)">纯咨询</button>
+          <button type="button" class="reason-chip" data-v="旧房改造" onclick="pickReason(this)">旧房改造</button>
+          <button type="button" class="reason-chip" data-v="超出服务半径" onclick="pickReason(this)">超出服务半径</button>
+          <button type="button" class="reason-chip" data-v="其他" onclick="pickReason(this)">其他</button>
+        </div>
+        <div class="form-error" id="reasonErr">请选择不可服务原因</div>
+        <div id="reasonOtherWrap" style="display:none;margin-top:10px">
+          <input class="input" id="reasonOther" placeholder="请说明其他原因" />
+          <div class="form-error" id="reasonOtherErr">请填写其他原因</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>预算较高</label>
+        <label class="check-row"><input type="checkbox" id="highBudget" /><span>预算较高<span class="hint">供经销商参考，勾选后对方可优先跟进</span></span></label>
+      </div>
+      <div class="form-group" id="dealerGroup">
+        <label>经销商 <span class="req">*</span> <span class="hint">可多选，回车添加</span></label>
+        <div class="dealer-box" id="dealerBox">
+          <div class="dealer-tags" id="dealerTags"></div>
+          <input class="dealer-input" id="dealerInput" placeholder="搜索或回车添加经销商" autocomplete="off" />
+        </div>
+        <div class="dealer-list" id="dealerList"></div>
+        <div class="form-error" id="dealerErr">请至少选择一位经销商</div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-default" onclick="closeModal('assignModal')">取消</button><button class="btn btn-primary" onclick="confirmAssign()">确定</button></div>
   </div>
 </div>
 
@@ -520,7 +575,8 @@ textarea.input{height:auto;min-height:88px;padding:10px 12px;resize:vertical;lin
     <li>状态列合并：以跟进状态为主（新线索/已联系/已成交/已流失）；原「看板阶段·跟进中」并入接待步骤条，列表不再重复；「一级」改「来源」并与渠道合并显示</li>
     <li>筛选改为标签页（全部/待跟进/已成交/流失）+ 搜索 + 意向/来源</li>
     <li>操作列：记跟进 / 查看；空值「—」；空状态</li>
-    <li>详情：「记下跟进」主按钮；步骤条；时间线；预报价禁用原因</li>
+    <li>详情：上半信息加「服务类型」（自营/分发）；「记下跟进」主按钮；步骤条；时间线；预报价禁用原因留在接待进度</li>
+    <li>分发：写明不可服务原因，分给经销商（非同事）；确定后服务类型变分发并记入时间线</li>
     <li>记跟进可写方式/内容/下次时间/改意向，真追加</li>
     <li>建档打开不报错；失焦/提交才校验；重复提示</li>
     <li>批量建档三步：模板→上传→结果</li>
@@ -535,20 +591,20 @@ const CHANNEL_SOURCE = {
   '老客户转介绍':'线下','设计师/前端合作':'线下','同行异业':'线下','自然到店/来电':'线下'
 };
 let customers = [
-  {id:'KH-2026-001',name:'陈立',phone:'13800001001',wechat:'wx_chenli',city:'重庆',source:'线上',channel:'抖音直播',intent:'A',status:'已联系',points:150,owner:'老板',nextFollow:'2026-11-04 10:00',lastFollow:'2026-11-04 17:57',contactNote:'已通话 · 已加微信',hasDrawing:false,reception:2,
+  {id:'KH-2026-001',name:'陈立',phone:'13800001001',wechat:'wx_chenli',city:'重庆',source:'线上',channel:'抖音直播',intent:'A',status:'已联系',points:150,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:'2026-11-04 10:00',lastFollow:'2026-11-04 17:57',contactNote:'已通话 · 已加微信',hasDrawing:false,reception:2,
     follows:[
       {method:'微信',content:'已通话，已加微信。客户表示周末有空，可约到店看样板。',time:'2026-11-04 17:57',author:'老板',next:'2026-11-05 10:00'},
       {method:'电话',content:'首次外呼接通，介绍了住家研选服务，客户有装修意向，约微信详聊。',time:'2026-11-04 15:20',author:'老板',next:null}
     ], visits:[]},
-  {id:'KH-2026-002',name:'林晓',phone:'13800001002',wechat:'wx_linxiao',city:'成都',source:'线上',channel:'抖音视频',intent:'B',status:'已成交',points:100,owner:'老板',nextFollow:null,lastFollow:'2026-10-28 14:00',contactNote:'已通话 · 已加微信',hasDrawing:true,reception:6,follows:[{method:'到店',content:'签约完成，进入施工排期。',time:'2026-10-28 14:00',author:'老板',next:null}],visits:[{time:'2026-10-20',note:'到店看样板间'}]},
-  {id:'KH-2026-003',name:'赵敏',phone:'13800001003',wechat:'wx_zhaomin',city:'杭州',source:'线上',channel:'小红书视频',intent:'C',status:'新线索',points:50,owner:'老板',nextFollow:'2026-11-05 15:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
-  {id:'KH-2026-004',name:'周凯',phone:'13800001004',wechat:'wx_zhoukai',city:'武汉',source:'线上',channel:'视频号',intent:'A',status:'新线索',points:150,owner:'小王',nextFollow:'2026-11-06 09:30',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
-  {id:'KH-2026-005',name:'吴婷',phone:'13800001005',wechat:'wx_wuting',city:'西安',source:'线上',channel:'豆包',intent:'B',status:'已成交',points:100,owner:'老板',nextFollow:null,lastFollow:'2026-10-15 11:00',contactNote:'已通话 · 已加微信',hasDrawing:true,reception:6,follows:[],visits:[]},
-  {id:'KH-2026-006',name:'郑浩',phone:'13800001006',wechat:'wx_zhenghao',city:'南京',source:'线下',channel:'老客户转介绍',intent:'C',status:'新线索',points:50,owner:'小李',nextFollow:'2026-11-03 16:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
-  {id:'KH-2026-007',name:'孙莉',phone:'13800001007',wechat:'wx_sunli',city:'长沙',source:'线下',channel:'设计师/前端合作',intent:'',status:'新线索',points:null,owner:'老板',nextFollow:'2026-11-07 10:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
-  {id:'KH-2026-008',name:'钱程',phone:'13800001008',wechat:'wx_qiancheng',city:'青岛',source:'线下',channel:'同行异业',intent:'A',status:'新线索',points:150,owner:'小王',nextFollow:'2026-11-05 11:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
-  {id:'KH-2026-009',name:'冯雪',phone:'13800001009',wechat:'wx_fengxue',city:'苏州',source:'线下',channel:'自然到店/来电',intent:'B',status:'新线索',points:100,owner:'老板',nextFollow:'2026-11-08 14:00',lastFollow:'2026-11-02 09:30',contactNote:'已通话',hasDrawing:false,reception:1,follows:[],visits:[]},
-  {id:'KH-2026-010',name:'韩磊',phone:'13800001010',wechat:'wx_hanlei',city:'昆明',source:'线上',channel:'抖音直播',intent:'C',status:'新线索',points:50,owner:'小李',nextFollow:'2026-11-06 18:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]}
+  {id:'KH-2026-002',name:'林晓',phone:'13800001002',wechat:'wx_linxiao',city:'成都',source:'线上',channel:'抖音视频',intent:'B',status:'已成交',points:100,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:null,lastFollow:'2026-10-28 14:00',contactNote:'已通话 · 已加微信',hasDrawing:true,reception:6,follows:[{method:'到店',content:'签约完成，进入施工排期。',time:'2026-10-28 14:00',author:'老板',next:null}],visits:[{time:'2026-10-20',note:'到店看样板间'}]},
+  {id:'KH-2026-003',name:'赵敏',phone:'13800001003',wechat:'wx_zhaomin',city:'杭州',source:'线上',channel:'小红书视频',intent:'C',status:'新线索',points:50,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:'2026-11-05 15:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
+  {id:'KH-2026-004',name:'周凯',phone:'13800001004',wechat:'wx_zhoukai',city:'武汉',source:'线上',channel:'视频号',intent:'A',status:'新线索',points:150,owner:'小王',serviceType:'分发',dealers:['武汉邻里装'],distributeReason:'超出服务半径',nextFollow:'2026-11-06 09:30',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
+  {id:'KH-2026-005',name:'吴婷',phone:'13800001005',wechat:'wx_wuting',city:'西安',source:'线上',channel:'豆包',intent:'B',status:'已成交',points:100,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:null,lastFollow:'2026-10-15 11:00',contactNote:'已通话 · 已加微信',hasDrawing:true,reception:6,follows:[],visits:[]},
+  {id:'KH-2026-006',name:'郑浩',phone:'13800001006',wechat:'wx_zhenghao',city:'南京',source:'线下',channel:'老客户转介绍',intent:'C',status:'新线索',points:50,owner:'小李',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:'2026-11-03 16:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
+  {id:'KH-2026-007',name:'孙莉',phone:'13800001007',wechat:'wx_sunli',city:'长沙',source:'线下',channel:'设计师/前端合作',intent:'',status:'新线索',points:null,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:'2026-11-07 10:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
+  {id:'KH-2026-008',name:'钱程',phone:'13800001008',wechat:'wx_qiancheng',city:'青岛',source:'线下',channel:'同行异业',intent:'A',status:'新线索',points:150,owner:'小王',serviceType:'分发',dealers:['青岛海纳家居'],distributeReason:'户型过小',nextFollow:'2026-11-05 11:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]},
+  {id:'KH-2026-009',name:'冯雪',phone:'13800001009',wechat:'wx_fengxue',city:'苏州',source:'线下',channel:'自然到店/来电',intent:'B',status:'新线索',points:100,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:'2026-11-08 14:00',lastFollow:'2026-11-02 09:30',contactNote:'已通话',hasDrawing:false,reception:1,follows:[],visits:[]},
+  {id:'KH-2026-010',name:'韩磊',phone:'13800001010',wechat:'wx_hanlei',city:'昆明',source:'线上',channel:'抖音直播',intent:'C',status:'新线索',points:50,owner:'小李',serviceType:'分发',dealers:['昆明暖居'],distributeReason:'超出服务半径',nextFollow:'2026-11-06 18:00',lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]}
 ];
 let state = {view:'list',detailId:null,filterTab:'全部',search:'',intentFilter:'',sourceFilter:'',sortKey:'nextFollow',sortDir:'asc',followTargetId:null,intentPick:'',batchStep:1,listScroll:0};
 const TODAY = '2026-11-05';
@@ -557,6 +613,17 @@ function fmtPhone(p){if(!p)return '—';const s=String(p).replace(/\D/g,'');if(s
 function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function intentBadge(i){if(!i)return '<span class="badge badge-intent-none">无意向</span>';return `<span class="badge badge-intent-${i}">意向 ${i}</span>`;}
 function statusBadge(s){return `<span class="badge badge-status-${s}">${s}</span>`;}
+function serviceBadge(c){
+  const typ=c.serviceType||'自营';
+  let meta='';
+  if(typ==='分发'){
+    const parts=[];
+    if(c.dealers&&c.dealers.length) parts.push(c.dealers.join('、'));
+    if(c.distributeReason) parts.push(c.distributeReason);
+    if(parts.length) meta=`<span class="svc-meta">${esc(parts.join(' · '))}</span>`;
+  }
+  return `<span class="badge badge-svc-${typ}">${typ}</span>${meta}`;
+}
 function dateClass(d){if(!d)return 'date-empty';const day=d.slice(0,10);if(day<TODAY)return 'date-overdue';if(day===TODAY)return 'date-today';return 'date-normal';}
 function iconCopy(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';}
 function iconClose(){return '<svg class="ico-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>';}
@@ -662,7 +729,6 @@ function renderList(){
         <div class="toolbar-left">
           <button class="btn btn-primary" onclick="openCreate()">建档</button>
           <button class="btn btn-default" onclick="openBatch()">批量建档</button>
-          <button class="btn btn-default" onclick="toast('已导出当前筛选结果（演示）')">导出</button>
           <button class="btn btn-icon" title="刷新" onclick="toast('已刷新')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
         </div>
         <div class="toolbar-right">
@@ -736,21 +802,19 @@ function renderDetail(){
             <button class="btn btn-default more-trigger" onclick="toggleMore(event)">更多 ▾</button>
             <div class="dropdown-menu">
               <button class="dropdown-item" onclick="openIntentModal();closeMore()">改意向</button>
-              <button class="dropdown-item" onclick="openAssign();closeMore()">分发给同事</button>
+              <button class="dropdown-item" onclick="openAssign();closeMore()">分发</button>
               <button class="dropdown-item danger" onclick="openLost();closeMore()">标流失</button>
             </div>
           </div>
           <button class="btn btn-primary" onclick="openFollow()">记下跟进</button>
         </div>
       </div>
-      <div class="info-grid">
+      <div class="info-grid info-grid-5">
         <div class="info-item"><label>电话</label><div class="val phone-cell"><span class="phone">${fmtPhone(c.phone)}</span><button class="copy-btn" style="opacity:1" onclick="copyText('${c.phone}',event)">${iconCopy()}</button></div></div>
         <div class="info-item"><label>微信</label><div class="val wx-cell"><span>${esc(c.wechat)}</span> <button class="copy-btn" style="opacity:1" onclick="copyText('${c.wechat}',event)">${iconCopy()}</button></div></div>
         <div class="info-item"><label>城市</label><div class="val">${esc(c.city)}</div></div>
         <div class="info-item"><label>来源 · 渠道</label><div class="val">${esc(c.source)} · ${esc(c.channel)}</div></div>
-        <div class="info-item"><label>积分</label><div class="val">${c.points==null?'—':Number(c.points).toFixed(0)}</div></div>
-        <div class="info-item"><label>联系情况</label><div class="val ${c.contactNote?'':'muted'}">${c.contactNote||'还没有'}</div></div>
-        <div class="info-item"><label>预报价</label><div class="val muted">${c.hasDrawing?'已有图纸，可发预算':'还没有'}${!c.hasDrawing?' <span style="font-size:11px;color:var(--text-muted)">（先上传图纸）</span>':''}</div></div>
+        <div class="info-item"><label>服务类型</label><div class="val" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">${serviceBadge(c)}</div></div>
         <div class="info-item"><label>下次跟进</label><div class="val">${fmtNextFollow(c.nextFollow)}</div></div>
       </div>
       <div class="section"><div class="section-title">接待进度 <span style="font-weight:400;color:var(--text-muted);font-size:12px">${Math.min(c.reception,6)}/6</span></div><div class="steps">${stepsHtml}</div></div>
@@ -852,7 +916,7 @@ function submitCreate(){
   const source=CHANNEL_SOURCE[channel]||'—';
   const intent=document.getElementById('cIntent').value;
   const n=customers.length+1;const id='KH-2026-'+String(n).padStart(3,'0');
-  customers.unshift({id,name,phone:phone||'',wechat,city,source,channel,intent,status:'新线索',points:null,owner:'老板',nextFollow:null,lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]});
+  customers.unshift({id,name,phone:phone||'',wechat,city,source,channel,intent,status:'新线索',points:null,owner:'老板',serviceType:'自营',dealers:[],distributeReason:'',nextFollow:null,lastFollow:null,contactNote:'',hasDrawing:false,reception:1,follows:[],visits:[]});
   closeModal('createModal');toast('建档成功：'+name);state.filterTab='全部';state.search='';render();
 }
 function openBatch(){state.batchStep=1;updateBatchUI();openModal('batchModal');}
@@ -871,8 +935,131 @@ function confirmLost(){const c=customers.find(x=>x.id===state.detailId);c.status
 function openIntentModal(){const c=customers.find(x=>x.id===state.detailId);state.intentPick=c.intent||'A';document.querySelectorAll('#intentSeg button').forEach(b=>b.classList.toggle('active',b.dataset.v===state.intentPick));openModal('intentModal');}
 function setIntentSeg(btn){document.querySelectorAll('#intentSeg button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.intentPick=btn.dataset.v;}
 function saveIntent(){const c=customers.find(x=>x.id===state.detailId);c.intent=state.intentPick;if(c.reception<3)c.reception=3;closeModal('intentModal');toast('意向已更新为 '+state.intentPick);render();}
-function openAssign(){openModal('assignModal')}
-function confirmAssign(){const to=document.getElementById('assignTo').value;const c=customers.find(x=>x.id===state.detailId);c.owner=to;closeModal('assignModal');toast('已分发给 '+to);render();}
+const DEALER_PRESET=[
+  {name:'重庆优家装饰',city:'重庆'},
+  {name:'成都美居联盟',city:'成都'},
+  {name:'青岛海纳家居',city:'青岛'},
+  {name:'昆明暖居',city:'昆明'},
+  {name:'武汉邻里装',city:'武汉'}
+];
+let assignState={reason:'',other:'',dealers:[],highBudget:false};
+
+function openAssign(){
+  assignState={reason:'',other:'',dealers:[],highBudget:false};
+  document.querySelectorAll('#reasonGrid .reason-chip').forEach(b=>b.classList.remove('active'));
+  document.getElementById('reasonOtherWrap').style.display='none';
+  document.getElementById('reasonOther').value='';
+  document.getElementById('highBudget').checked=false;
+  document.getElementById('dealerInput').value='';
+  document.getElementById('reasonGroup').classList.remove('has-error');
+  document.getElementById('dealerGroup').classList.remove('has-error');
+  document.getElementById('reasonErr').style.display='none';
+  document.getElementById('reasonOtherErr').style.display='none';
+  document.getElementById('dealerErr').style.display='none';
+  renderDealerTags();
+  renderDealerList('');
+  openModal('assignModal');
+  setTimeout(()=>document.getElementById('dealerInput').focus(),50);
+}
+function pickReason(btn){
+  document.querySelectorAll('#reasonGrid .reason-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  assignState.reason=btn.dataset.v;
+  document.getElementById('reasonGroup').classList.remove('has-error');
+  document.getElementById('reasonErr').style.display='none';
+  const other=document.getElementById('reasonOtherWrap');
+  if(assignState.reason==='其他'){other.style.display='block';document.getElementById('reasonOther').focus();}
+  else {other.style.display='none';document.getElementById('reasonOtherErr').style.display='none';}
+}
+function renderDealerTags(){
+  const box=document.getElementById('dealerTags');
+  box.innerHTML=assignState.dealers.map((n,i)=>`<span class="dealer-tag">${esc(n)}<button type="button" aria-label="移除" onclick="removeDealer(${i})">${iconClose()}</button></span>`).join('');
+}
+function removeDealer(i){assignState.dealers.splice(i,1);renderDealerTags();renderDealerList(document.getElementById('dealerInput').value);}
+function renderDealerList(q){
+  const list=document.getElementById('dealerList');
+  const qq=(q||'').trim().toLowerCase();
+  let opts=DEALER_PRESET.filter(d=>!qq||d.name.toLowerCase().includes(qq)||d.city.includes(qq));
+  // also include custom dealers already selected? show presets only for picking
+  if(!opts.length && !qq){
+    list.innerHTML='<div class="dealer-empty">暂无经销商数据，可在上方输入后回车添加</div>';
+    return;
+  }
+  if(!opts.length){
+    list.innerHTML=`<div class="dealer-empty">没有匹配的经销商，按回车添加「${esc(q.trim())}」</div>`;
+    return;
+  }
+  list.innerHTML=opts.map(d=>{
+    const on=assignState.dealers.includes(d.name)?' on':'';
+    return `<div class="dealer-opt${on}" onclick="toggleDealer('${esc(d.name)}')"><span>${esc(d.name)}</span><span class="city">${esc(d.city)}</span></div>`;
+  }).join('');
+}
+function toggleDealer(name){
+  const i=assignState.dealers.indexOf(name);
+  if(i>=0) assignState.dealers.splice(i,1); else assignState.dealers.push(name);
+  document.getElementById('dealerGroup').classList.remove('has-error');
+  document.getElementById('dealerErr').style.display='none';
+  renderDealerTags();
+  renderDealerList(document.getElementById('dealerInput').value);
+}
+document.addEventListener('DOMContentLoaded',()=>{});
+// wire dealer input (after DOM exists — call once at end)
+function wireDealerInput(){
+  const inp=document.getElementById('dealerInput');
+  if(!inp || inp._wired) return; inp._wired=true;
+  inp.addEventListener('input',()=>renderDealerList(inp.value));
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){
+      e.preventDefault();
+      const v=inp.value.trim();
+      if(!v) return;
+      if(!assignState.dealers.includes(v)) assignState.dealers.push(v);
+      inp.value='';
+      document.getElementById('dealerGroup').classList.remove('has-error');
+      document.getElementById('dealerErr').style.display='none';
+      renderDealerTags();
+      renderDealerList('');
+    }
+  });
+}
+function confirmAssign(){
+  wireDealerInput();
+  const reason=assignState.reason;
+  let ok=true;
+  document.getElementById('reasonErr').style.display='none';
+  document.getElementById('reasonOtherErr').style.display='none';
+  document.getElementById('dealerErr').style.display='none';
+  document.getElementById('reasonGroup').classList.remove('has-error');
+  document.getElementById('dealerGroup').classList.remove('has-error');
+  if(!reason){document.getElementById('reasonGroup').classList.add('has-error');document.getElementById('reasonErr').style.display='block';ok=false;}
+  let reasonText=reason;
+  if(reason==='其他'){
+    const other=document.getElementById('reasonOther').value.trim();
+    if(!other){document.getElementById('reasonOtherErr').style.display='block';document.getElementById('reasonGroup').classList.add('has-error');ok=false;}
+    else reasonText=other;
+  }
+  if(!assignState.dealers.length){document.getElementById('dealerGroup').classList.add('has-error');document.getElementById('dealerErr').style.display='block';ok=false;}
+  if(!ok) return;
+  const high=document.getElementById('highBudget').checked;
+  const c=customers.find(x=>x.id===state.detailId);
+  c.serviceType='分发';
+  c.dealers=assignState.dealers.slice();
+  c.distributeReason=reasonText;
+  const now='2026-11-05 '+new Date().toTimeString().slice(0,5);
+  const dealerStr=c.dealers.join('、');
+  c.follows.unshift({
+    method:'其他',
+    content:`已分发：原因「${reasonText}」· 经销商 ${dealerStr}${high?' · 预算较高':''}`,
+    time:now, author:'老板', next:null
+  });
+  c.lastFollow=now;
+  closeModal('assignModal');
+  toast('已分发给 '+dealerStr);
+  render();
+}
+// ensure input wired when page loads
+setTimeout(wireDealerInput,0);
+
 
 if(!location.hash) location.hash='#/list';
 (function(){const h=location.hash||'#/list';if(h.startsWith('#/detail/')){state.view='detail';state.detailId=h.slice(9);}render();})();
